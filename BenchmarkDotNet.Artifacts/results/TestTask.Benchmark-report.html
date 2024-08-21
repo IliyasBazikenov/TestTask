@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>TestTask.Benchmark-20240821-063112</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.14.0, Windows 10 (10.0.19045.4780/22H2/2022Update)
+AMD Ryzen 7 7700, 1 CPU, 16 logical and 8 physical cores
+.NET SDK 8.0.401
+  [Host]     : .NET 8.0.8 (8.0.824.36612), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  DefaultJob : .NET 8.0.8 (8.0.824.36612), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method                    </th><th>ProcessingSteps</th><th>RateStoreDictionarySize</th><th>Mean   </th><th>Error </th><th>StdDev </th><th>Median </th><th>Gen0</th><th>Gen1</th><th>Gen2</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>ConcurrentDictionaryApproach</td><td>1000</td><td>100</td><td>18.72 &mu;s</td><td>0.062 &mu;s</td><td>0.055 &mu;s</td><td>18.71 &mu;s</td><td>15.2588</td><td>0.6104</td><td>-</td><td>248.42 KB</td>
+</tr><tr><td>LazyConcurrentDictionaryApproach</td><td>1000</td><td>100</td><td>24.88 &mu;s</td><td>0.050 &mu;s</td><td>0.042 &mu;s</td><td>24.89 &mu;s</td><td>25.6348</td><td>1.5564</td><td>-</td><td>417.69 KB</td>
+</tr><tr><td>ReaderWriterLockSlimApproach</td><td>1000</td><td>100</td><td>230.83 &mu;s</td><td>4.469 &mu;s</td><td>5.320 &mu;s</td><td>232.67 &mu;s</td><td>2.9297</td><td>-</td><td>-</td><td>52.62 KB</td>
+</tr><tr><td>ConcurrentDictionaryApproach</td><td>1000</td><td>10000</td><td>21.38 &mu;s</td><td>0.050 &mu;s</td><td>0.042 &mu;s</td><td>21.39 &mu;s</td><td>16.5100</td><td>4.1199</td><td>-</td><td>268.96 KB</td>
+</tr><tr><td>LazyConcurrentDictionaryApproach</td><td>1000</td><td>10000</td><td>29.73 &mu;s</td><td>0.238 &mu;s</td><td>0.222 &mu;s</td><td>29.78 &mu;s</td><td>26.5503</td><td>8.7891</td><td>-</td><td>433.01 KB</td>
+</tr><tr><td>ReaderWriterLockSlimApproach</td><td>1000</td><td>10000</td><td>224.68 &mu;s</td><td>4.100 &mu;s</td><td>3.835 &mu;s</td><td>225.18 &mu;s</td><td>3.9063</td><td>-</td><td>-</td><td>74.78 KB</td>
+</tr><tr><td>ConcurrentDictionaryApproach</td><td>1000</td><td>100000</td><td>21.35 &mu;s</td><td>0.074 &mu;s</td><td>0.070 &mu;s</td><td>21.33 &mu;s</td><td>16.4795</td><td>4.0894</td><td>-</td><td>268.97 KB</td>
+</tr><tr><td>LazyConcurrentDictionaryApproach</td><td>1000</td><td>100000</td><td>29.28 &mu;s</td><td>0.082 &mu;s</td><td>0.073 &mu;s</td><td>29.28 &mu;s</td><td>26.5503</td><td>8.7891</td><td>-</td><td>433 KB</td>
+</tr><tr><td>ReaderWriterLockSlimApproach</td><td>1000</td><td>100000</td><td>218.73 &mu;s</td><td>2.047 &mu;s</td><td>1.915 &mu;s</td><td>219.18 &mu;s</td><td>4.3945</td><td>-</td><td>-</td><td>74.71 KB</td>
+</tr><tr><td>ConcurrentDictionaryApproach</td><td>100000</td><td>100</td><td>1,680.04 &mu;s</td><td>33.557 &mu;s</td><td>54.188 &mu;s</td><td>1,688.53 &mu;s</td><td>1496.0938</td><td>54.6875</td><td>-</td><td>24383.47 KB</td>
+</tr><tr><td>LazyConcurrentDictionaryApproach</td><td>100000</td><td>100</td><td>1,977.36 &mu;s</td><td>19.611 &mu;s</td><td>18.344 &mu;s</td><td>1,981.11 &mu;s</td><td>2527.3438</td><td>128.9063</td><td>-</td><td>41213.86 KB</td>
+</tr><tr><td>ReaderWriterLockSlimApproach</td><td>100000</td><td>100</td><td>20,847.81 &mu;s</td><td>187.906 &mu;s</td><td>175.767 &mu;s</td><td>20,836.99 &mu;s</td><td>281.2500</td><td>-</td><td>-</td><td>4693.25 KB</td>
+</tr><tr><td>ConcurrentDictionaryApproach</td><td>100000</td><td>10000</td><td>3,202.34 &mu;s</td><td>36.097 &mu;s</td><td>33.765 &mu;s</td><td>3,208.29 &mu;s</td><td>1671.8750</td><td>835.9375</td><td>-</td><td>27273.92 KB</td>
+</tr><tr><td>LazyConcurrentDictionaryApproach</td><td>100000</td><td>10000</td><td>6,762.25 &mu;s</td><td>36.183 &mu;s</td><td>33.846 &mu;s</td><td>6,767.62 &mu;s</td><td>2671.8750</td><td>2656.2500</td><td>-</td><td>43698.19 KB</td>
+</tr><tr><td>ReaderWriterLockSlimApproach</td><td>100000</td><td>10000</td><td>22,159.89 &mu;s</td><td>219.371 &mu;s</td><td>205.200 &mu;s</td><td>22,109.43 &mu;s</td><td>468.7500</td><td>218.7500</td><td>-</td><td>7724.92 KB</td>
+</tr><tr><td>ConcurrentDictionaryApproach</td><td>100000</td><td>100000</td><td>19,511.90 &mu;s</td><td>341.255 &mu;s</td><td>350.444 &mu;s</td><td>19,521.47 &mu;s</td><td>1937.5000</td><td>1093.7500</td><td>281.2500</td><td>27359 KB</td>
+</tr><tr><td>LazyConcurrentDictionaryApproach</td><td>100000</td><td>100000</td><td>37,665.28 &mu;s</td><td>745.851 &mu;s</td><td>1,286.557 &mu;s</td><td>37,616.77 &mu;s</td><td>2928.5714</td><td>1571.4286</td><td>285.7143</td><td>43777.48 KB</td>
+</tr><tr><td>ReaderWriterLockSlimApproach</td><td>100000</td><td>100000</td><td>28,234.33 &mu;s</td><td>403.473 &mu;s</td><td>377.408 &mu;s</td><td>28,248.64 &mu;s</td><td>468.7500</td><td>437.5000</td><td>-</td><td>7811.64 KB</td>
+</tr><tr><td>ConcurrentDictionaryApproach</td><td>1000000</td><td>100</td><td>15,118.23 &mu;s</td><td>83.597 &mu;s</td><td>78.197 &mu;s</td><td>15,126.21 &mu;s</td><td>14937.5000</td><td>390.6250</td><td>-</td><td>243435.92 KB</td>
+</tr><tr><td>LazyConcurrentDictionaryApproach</td><td>1000000</td><td>100</td><td>20,102.18 &mu;s</td><td>184.925 &mu;s</td><td>172.979 &mu;s</td><td>20,102.17 &mu;s</td><td>25250.0000</td><td>1187.5000</td><td>31.2500</td><td>411762.6 KB</td>
+</tr><tr><td>ReaderWriterLockSlimApproach</td><td>1000000</td><td>100</td><td>198,188.51 &mu;s</td><td>1,108.476 &mu;s</td><td>1,036.869 &mu;s</td><td>197,835.70 &mu;s</td><td>2000.0000</td><td>-</td><td>-</td><td>46880.48 KB</td>
+</tr><tr><td>ConcurrentDictionaryApproach</td><td>1000000</td><td>10000</td><td>33,468.56 &mu;s</td><td>282.413 &mu;s</td><td>264.169 &mu;s</td><td>33,554.41 &mu;s</td><td>16687.5000</td><td>8343.7500</td><td>-</td><td>272595.67 KB</td>
+</tr><tr><td>LazyConcurrentDictionaryApproach</td><td>1000000</td><td>10000</td><td>66,701.45 &mu;s</td><td>418.630 &mu;s</td><td>391.586 &mu;s</td><td>66,717.96 &mu;s</td><td>26750.0000</td><td>26250.0000</td><td>250.0000</td><td>436731.5 KB</td>
+</tr><tr><td>ReaderWriterLockSlimApproach</td><td>1000000</td><td>10000</td><td>248,869.38 &mu;s</td><td>5,709.479 &mu;s</td><td>16,834.528 &mu;s</td><td>259,725.95 &mu;s</td><td>4000.0000</td><td>2000.0000</td><td>-</td><td>77194.11 KB</td>
+</tr><tr><td>ConcurrentDictionaryApproach</td><td>1000000</td><td>100000</td><td>178,625.38 &mu;s</td><td>4,540.999 &mu;s</td><td>13,028.979 &mu;s</td><td>175,392.60 &mu;s</td><td>17666.6667</td><td>9333.3333</td><td>1000.0000</td><td>273656.97 KB</td>
+</tr><tr><td>LazyConcurrentDictionaryApproach</td><td>1000000</td><td>100000</td><td>318,730.83 &mu;s</td><td>6,225.987 &mu;s</td><td>16,725.712 &mu;s</td><td>315,470.15 &mu;s</td><td>28000.0000</td><td>15000.0000</td><td>2000.0000</td><td>437622.57 KB</td>
+</tr><tr><td>ReaderWriterLockSlimApproach</td><td>1000000</td><td>100000</td><td>285,440.99 &mu;s</td><td>1,662.501 &mu;s</td><td>1,555.105 &mu;s</td><td>284,883.90 &mu;s</td><td>4000.0000</td><td>3000.0000</td><td>-</td><td>78038.06 KB</td>
+</tr></tbody></table>
+</body>
+</html>
