@@ -18,7 +18,7 @@ public class Benchmark
     private static readonly ReaderWriterLockSlimApproach.RateStorage RateStorageRwLock = new();
 
     [Benchmark]
-    public void ParallelForEach()
+    public void ConcurrentDictionaryApproach()
     {
         Parallel.ForEach(Enumerable.Range(0, ProcessingSteps),
             (int stepNumber) =>
@@ -26,18 +26,12 @@ public class Benchmark
                 var symbol = (stepNumber % RateStoreDictionarySize).ToString();
 
                 RateStorage.UpdateRate(GetNativeRate(symbol));
-                var rate = RateStorage.GetRate(symbol);
-
-#if DEBUG
-                Console.WriteLine($"GetRate - {rate?.Symbol}, BID - {rate?.Bid}, ASK - {rate?.Ask}");
-#endif
+                RateStorage.GetRate(symbol);
             });
-
-        
     }
 
     [Benchmark]
-    public void ParallelForEachLazy()
+    public void LazyConcurrentDictionaryApproach()
     {
         Parallel.ForEach(Enumerable.Range(0, ProcessingSteps),
             (int stepNumber) =>
@@ -45,31 +39,12 @@ public class Benchmark
                 var symbol = (stepNumber % RateStoreDictionarySize).ToString();
 
                 RateStorageLazy.UpdateRate(GetNativeRate(symbol));
-                var rate = RateStorageLazy.GetRate(symbol);
-
-#if DEBUG
-                Console.WriteLine($"GetRate - {rate?.Symbol}, BID - {rate?.Bid}, ASK - {rate?.Ask}");
-#endif
+                RateStorageLazy.GetRate(symbol);
             });
-        
-        PrintRates();
-    }
-    
-    private void PrintRates()
-    {
-        Console.WriteLine();
-        Console.WriteLine("Results");
-        for (int i = 0; i < RateStoreDictionarySize; i++)
-        {
-            var rate = RateStorageLazy.GetRate(i.ToString());
-#if DEBUG
-            Console.WriteLine($"GetRate - {rate?.Symbol}, BID - {rate?.Bid}, ASK - {rate?.Ask}");
-#endif
-        }
     }
 
     [Benchmark]
-    public void ParallelForEachRwLock()
+    public void ReaderWriterLockSlimApproach()
     {
         Parallel.ForEach(Enumerable.Range(0, ProcessingSteps),
             (int stepNumber) =>
@@ -77,11 +52,7 @@ public class Benchmark
                 var symbol = (stepNumber % RateStoreDictionarySize).ToString();
 
                 RateStorageRwLock.UpdateRate(GetNativeRate(symbol));
-                var rate = RateStorageRwLock.GetRate(symbol);
-
-#if DEBUG
-                Console.WriteLine($"GetRate - {rate?.Symbol}, BID - {rate?.Bid}, ASK - {rate?.Ask}");
-#endif
+                RateStorageRwLock.GetRate(symbol);
             });
     }
 

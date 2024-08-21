@@ -1,4 +1,4 @@
-﻿namespace TestTask.ConcurrentDictionaryApproach;
+﻿namespace TestTask;
 
 public class NativeRate
 {

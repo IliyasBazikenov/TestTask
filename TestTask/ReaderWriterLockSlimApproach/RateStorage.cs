@@ -1,51 +1,51 @@
 ﻿using System.Collections.Concurrent;
 
-namespace TestTask.ConcurrentDictionaryApproach;
+namespace TestTask.ReaderWriterLockSlimApproach;
 
+// This approach is not useful if we need to iterate through Dictionary, because iterating not thread-safe
 public class RateStorage
 {
-    private ConcurrentDictionary<string, Rate> rates = new();
-    private static int _runCount = 0;
+    private Dictionary<string, Rate> rates = new();
+    private readonly ReaderWriterLockSlim rwLock = new();
 
-    // Minus of that method is that AddOrUpdate is not atomic operation, and AddValueFactory/updateValueFactory delegates can call multiple times
-    // And if AddValueFactory/updateValueFactory do heavy calculations UpdateRate method can be slow 
     public void UpdateRate(NativeRate newRate)
     {
-        var rate = rates.AddOrUpdate(newRate.Symbol, key =>
+        rwLock.EnterWriteLock();
+        try
         {
-            Interlocked.Increment(ref _runCount);
-            return new Rate
+            if (rates.ContainsKey(newRate.Symbol) == false)
             {
-                Symbol = key,
-                Time = newRate.Time,
-                Bid = newRate.Bid,
-                Ask = newRate.Ask
-            };
-        }, (key, rate) =>
+                rates.Add(newRate.Symbol, new Rate());
+            }
+  
+            var oldRate = rates[newRate.Symbol];
+            oldRate.Time = newRate.Time;
+            oldRate.Symbol = newRate.Symbol;
+            oldRate.Bid = newRate.Bid;
+            oldRate.Ask = newRate.Ask;
+        }
+        finally
         {
-            Interlocked.Increment(ref _runCount);
-            return new Rate
-            {
-                Symbol = key,
-                Time = newRate.Time,
-                Bid = newRate.Bid,
-                Ask = newRate.Ask,
-            };
-        });
+            rwLock.ExitWriteLock();
+        }
 
-#if DEBUG
-        Console.WriteLine(
-            $"AddOrUpdate - {rate?.Symbol}, BID - {rate?.Bid}, ASK - {rate?.Ask}, _runCount - {_runCount}");
-#endif
     }
 
-    // This method is atomic cause updating of rates is using immutable approach, i.e. replace current Rate with modified
+    // This method is atomic because of using ReaderWriterLockSlim
     // TryGetValue faster than ContainsKey
     public Rate GetRate(string symbol)
     {
-        if (rates.TryGetValue(symbol, out var rate) == false)
-            return null;
+        rwLock.EnterReadLock();
+        try
+        {
+            if (rates.TryGetValue(symbol, out var rate) == false)
+                return null;
 
-        return rate;
+            return rate;
+        }
+        finally
+        {
+            rwLock.ExitReadLock();
+        }
     }
 }

@@ -1,31 +1,29 @@
 ﻿using System.Collections.Concurrent;
 
-namespace TestTask.ConcurrentDictionaryApproach;
+namespace TestTask.LazyConcurrentDictionaryApproach;
 
 public class RateStorage
 {
-    private ConcurrentDictionary<string, Rate> rates = new();
-    
-    
-    //Big minus is that AddOrUpdate is not atomic operation, and AddValueFactory/updateValueFactory delegates can call multiple times
+    private ConcurrentDictionary<string, Lazy<Rate>> rates = new();
+    private static int _runCount = 0;
+
+    // Lazy is used for making a trick to reduce multiple calling of AddValueFactory/updateValueFactory delegates
     public void UpdateRate(NativeRate newRate)
     {
-        var rate = rates.AddOrUpdate(newRate.Symbol, key => new Rate
+        rates.AddOrUpdate(newRate.Symbol,
+            key => new Lazy<Rate>(ValueFactoryDelegate(newRate, key)),
+            (key, rate) => new Lazy<Rate>(ValueFactoryDelegate(newRate, key)));
+    }
+
+    private static Func<Rate> ValueFactoryDelegate(NativeRate newRate, string key)
+    {
+        return () => new Rate
         {
             Symbol = key,
             Time = newRate.Time,
             Bid = newRate.Bid,
             Ask = newRate.Ask
-        }, (key, rate) => new Rate
-        {
-            Symbol = key,
-            Time = newRate.Time,
-            Bid = newRate.Bid,
-            Ask = newRate.Ask,
-        });
-        
-                
-        Console.WriteLine($"AddOrUpdate - {rate?.Symbol}, BID - {rate?.Bid}, ASK - {rate?.Ask}");
+        };
     }
 
     public Rate GetRate(string symbol)
@@ -33,6 +31,6 @@ public class RateStorage
         if (rates.TryGetValue(symbol, out var rate) == false)
             return null;
 
-        return rate;
+        return rate.Value;
     }
 }
